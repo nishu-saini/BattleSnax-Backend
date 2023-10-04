@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 interface vandorDoc extends Document {
   name: string;
@@ -72,3 +72,5 @@ const vandorSchema = new Schema(
     timestamps: true,
   }
 );
+
+export const Vandor = mongoose.model<vandorDoc>("vandor", vandorSchema);
