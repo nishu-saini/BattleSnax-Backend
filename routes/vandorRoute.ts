@@ -1,4 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
+import {
+  getVandorProfile,
+  login,
+  updateVandorProfile,
+  updateVandorService,
+} from "../controllers/vandorController";
+import { authenticate } from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -7,5 +14,14 @@ router.get("/", (req: Request, res: Response, next: NextFunction) => {
     message: "Vandor Route",
   });
 });
+
+router.post("/login", login);
+
+router
+  .route("/profile")
+  .get(authenticate, getVandorProfile)
+  .patch(authenticate, updateVandorProfile);
+
+router.route("/service").patch(authenticate, updateVandorService);
 
 export default router;
