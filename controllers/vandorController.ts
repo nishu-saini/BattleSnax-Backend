@@ -86,6 +86,34 @@ export const updateVandorProfile = async (
   });
 };
 
+export const updateVandorCoverProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const vandor = await findVandor(user._id);
+
+    if (vandor) {
+      const files = req.files as [Express.Multer.File];
+
+      const images = files.map((file: Express.Multer.File) => file.filename);
+
+      vandor.coverImages.push(...images);
+
+      const result = await vandor.save();
+
+      return res.json(result);
+    }
+  }
+
+  res.json({
+    message: "Something went wrong while updating cover image",
+  });
+};
+
 export const updateVandorService = async (
   req: Request,
   res: Response,
@@ -127,13 +155,17 @@ export const addFood = async (
     const vandor = await findVandor(user._id);
 
     if (vandor) {
+      const files = req.files as [Express.Multer.File];
+
+      const images = files.map((file: Express.Multer.File) => file.filename);
+
       const createFood = await Food.create({
         vandorId: vandor._id,
         name,
         description,
         category,
         foodType,
-        images: ["mock.jpg"],
+        images,
         readyTime,
         price,
         rating: 0,
