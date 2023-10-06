@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import adminRoute from "./routes/adminRoute";
 import vandorRoute from "./routes/vandorRoute";
+import shoppingRoute from "./routes/shoppingRoute";
 import path from "path";
 
 const app = express();
@@ -14,5 +15,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 // Routes
 app.use("/admin", adminRoute);
 app.use("/vandor", vandorRoute);
+app.use(shoppingRoute);
 
 export default app;
