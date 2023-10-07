@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import { vandorPayload } from "../dto/vandor.dto";
 import Jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/config";
 import { authPayload } from "../dto/auth.dto";
@@ -20,7 +19,7 @@ export const validatePassword = async (
   return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
-export const generateToken = (payload: vandorPayload) => {
+export const generateToken = (payload: authPayload) => {
   return Jwt.sign(payload, JWT_SECRET, {
     expiresIn: "1h",
   });
