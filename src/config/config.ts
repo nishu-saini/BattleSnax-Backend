@@ -1,6 +1,7 @@
-export const PORT = 8000;
+export const PORT = process.env.PORT || 8000;
 
-export const MONGO_URI = "mongodb://localhost:27017";
+export const MONGO_URI =
+  "mongodb+srv://Quarnstric:nishu1234@cluster0.4wckrw1.mongodb.net/?retryWrites=true";
 
 export const JWT_SECRET = "feyhwivw3888fnwknkgwr";
 
