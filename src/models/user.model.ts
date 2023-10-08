@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { OrderDoc } from "./order.model";
 
 interface userDoc extends Document {
   email: string;
@@ -13,6 +14,7 @@ interface userDoc extends Document {
   otp_expiry: Date;
   lat: number;
   lng: number;
+  orders: [OrderDoc];
 }
 
 const userSchema = new Schema(
@@ -60,6 +62,12 @@ const userSchema = new Schema(
     lng: {
       type: Number,
     },
+    orders: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "order",
+      },
+    ],
   },
   {
     // delete unneccessary property from sending to client side

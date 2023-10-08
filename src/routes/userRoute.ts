@@ -1,6 +1,9 @@
 import express from "express";
 import {
+  createOrder,
   editProfile,
+  getOrderById,
+  getOrders,
   getProfile,
   login,
   requestOtp,
@@ -30,7 +33,14 @@ router
   .patch(authenticate, editProfile);
 
 // Cart
+
 // Order
+router.post("/create-order", authenticate, createOrder);
+
+router.get("/orders", authenticate, getOrders);
+
+router.get("/order/:id", authenticate, getOrderById);
+
 // Payment
 
 export default router;

@@ -30,6 +30,11 @@ export class EditUserProfileInputs {
   address: string;
 }
 
+export class OrderInputs {
+  _id: string;
+  unit: number;
+}
+
 export interface userPayload {
   _id: string;
   email: string;

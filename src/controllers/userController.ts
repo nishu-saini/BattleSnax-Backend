@@ -4,8 +4,11 @@ import { NextFunction, Request, Response } from "express";
 import {
   CreateUserInputs,
   EditUserProfileInputs,
+  OrderInputs,
   UserLoginInputs,
 } from "../dto/user.dto";
+import { Food } from "../models/food.model";
+import { Order } from "../models/order.model";
 import { User } from "../models/user.model";
 import { generateOtp, onRequestOTP } from "../utility/notification";
 import {
@@ -58,6 +61,7 @@ export const signup = async (
     verified: false,
     lat: 0,
     lng: 0,
+    orders: [],
   });
 
   if (result) {
@@ -253,6 +257,106 @@ export const editProfile = async (
 
       return res.status(200).json(result);
     }
+  }
+
+  res.status(400).json({
+    message: "Something went wrong, Try Again!",
+  });
+};
+
+export const createOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // grab current login customer
+  const user = req.user;
+
+  if (user) {
+    // create an order ID
+    const orderId = `${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const profile = await User.findById(user._id);
+
+    // Grab order items from request [ { id: XX, unit: XX } ]
+    const cart = <[OrderInputs]>req.body; // [ { id: XX, unit: XX } ]
+
+    let cartItems = [],
+      netAmount = 0;
+
+    // // Calculate order amount
+    const foods = await Food.find()
+      .where("_id")
+      .in(cart.map((item) => item._id));
+
+    foods.forEach((food) => {
+      cart.forEach(({ _id, unit }) => {
+        if (food._id == _id) {
+          netAmount += food.price * unit;
+          cartItems.push({ food, unit });
+        }
+      });
+    });
+
+    // Create order with item description
+    if (cartItems) {
+      // create Order
+      const currentOrder = await Order.create({
+        orderID: orderId,
+        items: cartItems,
+        totalAmount: netAmount,
+        orderDate: new Date(),
+        paidThrough: "COD",
+        payementResponse: "",
+        orderStatus: "Waiting",
+      });
+
+      // Finally update orders to user account
+      if (currentOrder) {
+        profile.orders.push(currentOrder);
+        await profile.save();
+
+        return res.status(200).json(currentOrder);
+      }
+    }
+  }
+
+  res.status(400).json({
+    message: "Error with Create Order",
+  });
+};
+
+export const getOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const profile = await User.findById(user._id).populate("orders");
+
+    if (profile) {
+      return res.status(200).json(profile.orders);
+    }
+  }
+
+  res.status(400).json({
+    message: "Something went wrong, Try Again!",
+  });
+};
+
+export const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const orderId = req.params.id;
+
+  if (orderId) {
+    const order = await (await Order.findById(orderId)).populate("items.food");
+
+    return res.status(200).json(order);
   }
 
   res.status(400).json({
