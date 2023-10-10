@@ -18,6 +18,8 @@ import {
   validatePassword,
 } from "../utility/password";
 
+/** ------------------ Authentication Section ------------------ **/
+
 export const signup = async (
   req: Request,
   res: Response,
@@ -206,6 +208,8 @@ export const requestOtp = async (
   });
 };
 
+/** ------------------ Profile Section ------------------ **/
+
 export const getProfile = async (
   req: Request,
   res: Response,
@@ -264,6 +268,108 @@ export const editProfile = async (
   });
 };
 
+/** ------------------ Cart Section ------------------ **/
+
+export const addToCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const profile = await User.findById(user._id).populate("cart.food");
+
+    let cartItems = [];
+
+    const { _id, unit } = <OrderInputs>req.body;
+
+    const food = await Food.findById(_id);
+
+    if (profile && food) {
+      // check for cart items
+      cartItems = profile.cart;
+
+      if (cartItems.length > 0) {
+        // check and update units
+        let existingItem = cartItems.filter(
+          (item) => item.food._id.toString() === _id
+        );
+
+        if (existingItem.length > 0) {
+          const index = cartItems.indexOf(existingItem[0]);
+
+          if (unit > 0) {
+            cartItems[index] = { food, unit };
+          } else {
+            cartItems.splice(index, 1);
+          }
+        } else {
+          cartItems.push({ food, unit });
+        }
+      } else {
+        cartItems.push({ food, unit });
+      }
+
+      if (cartItems) {
+        profile.cart = cartItems as any;
+        const result = await profile.save();
+
+        return res.status(200).json(result.cart);
+      }
+    }
+
+    return res.status(400).json({
+      message: "Something went wrong, Try Again!",
+    });
+  }
+};
+
+export const getCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const profile = await User.findById(user._id).populate("cart.food");
+
+    if (profile) {
+      return res.status(200).json(profile.cart);
+    }
+  }
+
+  res.status(400).json({
+    message: "Something went wrong, Try Again!",
+  });
+};
+
+export const deleteCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const profile = await User.findById(user._id).populate("cart.food");
+
+    if (profile) {
+      profile.cart = [] as any;
+      await profile.save();
+
+      return res.status(200).json(profile.cart);
+    }
+  }
+
+  res.status(400).json({
+    message: "Something went wrong, Try Again!",
+  });
+};
+
+/** ------------------ Order Section ------------------ **/
+
 export const createOrder = async (
   req: Request,
   res: Response,
@@ -284,6 +390,8 @@ export const createOrder = async (
     let cartItems = [],
       netAmount = 0;
 
+    let vandorId: string;
+
     // // Calculate order amount
     const foods = await Food.find()
       .where("_id")
@@ -292,6 +400,7 @@ export const createOrder = async (
     foods.forEach((food) => {
       cart.forEach(({ _id, unit }) => {
         if (food._id == _id) {
+          vandorId = food.vandorId;
           netAmount += food.price * unit;
           cartItems.push({ food, unit });
         }
@@ -303,21 +412,28 @@ export const createOrder = async (
       // create Order
       const currentOrder = await Order.create({
         orderID: orderId,
+        vandorId: vandorId,
         items: cartItems,
         totalAmount: netAmount,
         orderDate: new Date(),
         paidThrough: "COD",
         payementResponse: "",
         orderStatus: "Waiting",
+        remarks: "",
+        deliveryId: "",
+        appliedOffers: false,
+        offerId: null,
+        readyTime: 45,
       });
 
-      // Finally update orders to user account
-      if (currentOrder) {
-        profile.orders.push(currentOrder);
-        await profile.save();
+      // make cart empty
+      profile.cart = [] as any;
 
-        return res.status(200).json(currentOrder);
-      }
+      // Finally update orders to user account
+      profile.orders.push(currentOrder);
+      await profile.save();
+
+      return res.status(200).json(currentOrder);
     }
   }
 

@@ -2,12 +2,18 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface OrderDoc extends Document {
   orderID: string;
+  vandorId: string;
   items: [any];
   totalAmount: number;
   orderDate: Date;
   paidThrough: string; // COD, Credit Card, Wallet
   payementResponse: string;
   orderStatus: string;
+  remarks: string;
+  deliveryId: string;
+  appliedOffers: boolean;
+  offerId: string;
+  readyTime: number; // max 60 minutes
 }
 
 const orderSchema = new Schema(
@@ -15,6 +21,10 @@ const orderSchema = new Schema(
     orderID: {
       type: String,
       required: true,
+    },
+    vandorId: {
+      type: String,
+      require: true,
     },
     items: [
       {
@@ -44,6 +54,21 @@ const orderSchema = new Schema(
     },
     orderStatus: {
       type: String,
+    },
+    remarks: {
+      type: String,
+    },
+    deliveryId: {
+      type: String,
+    },
+    appliedOffers: {
+      type: Boolean,
+    },
+    offerId: {
+      type: String,
+    },
+    readyTime: {
+      type: Number,
     },
   },
   {

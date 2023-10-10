@@ -10,7 +10,9 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/images", express.static(path.join(__dirname, "images")));
+
+const imagePath = path.join(__dirname, "../images");
+app.use("/images", express.static(imagePath));
 
 // Routes
 app.use("/admin", adminRoute);

@@ -1,9 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
 import {
   addFood,
+  getCurrentOrders,
   getFoods,
+  getOrderDetails,
   getVandorProfile,
   login,
+  processOrder,
   updateVandorCoverProfile,
   updateVandorProfile,
   updateVandorService,
@@ -42,9 +45,12 @@ router
   .patch(authenticate, images, updateVandorCoverProfile);
 
 router.route("/service").patch(authenticate, updateVandorService);
-
 router.route("/food").post(authenticate, images, addFood);
-
 router.route("/foods").get(authenticate, getFoods);
+
+// Orders
+router.get("/orders", authenticate, getCurrentOrders);
+router.get("/order/:id", authenticate, getOrderDetails);
+router.put("/order/:id/process", authenticate, processOrder);
 
 export default router;

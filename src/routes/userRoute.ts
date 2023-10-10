@@ -1,7 +1,10 @@
 import express from "express";
 import {
+  addToCart,
   createOrder,
+  deleteCart,
   editProfile,
+  getCart,
   getOrderById,
   getOrders,
   getProfile,
@@ -14,16 +17,10 @@ import { authenticate } from "../middlewares/auth";
 
 const router = express.Router();
 
-// Signup / Create Account
+// User Athenctication
 router.post("/signup", signup);
-
-// Login
 router.post("/login", login);
-
-// Verify customer account
 router.patch("/verify", authenticate, userVerify);
-
-// Request OTP
 router.get("/otp", authenticate, requestOtp);
 
 // profile
@@ -33,12 +30,15 @@ router
   .patch(authenticate, editProfile);
 
 // Cart
+router
+  .route("/cart")
+  .post(authenticate, addToCart)
+  .get(authenticate, getCart)
+  .delete(authenticate, deleteCart);
 
 // Order
 router.post("/create-order", authenticate, createOrder);
-
 router.get("/orders", authenticate, getOrders);
-
 router.get("/order/:id", authenticate, getOrderById);
 
 // Payment
