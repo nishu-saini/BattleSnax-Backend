@@ -13,33 +13,33 @@ import {
   signup,
   userVerify,
 } from "../controllers/userController";
-import { authenticate } from "../middlewares/auth";
+import { isAuthenticated } from "../middlewares/auth";
 
 const router = express.Router();
 
 // User Athenctication
 router.post("/signup", signup);
 router.post("/login", login);
-router.patch("/verify", authenticate, userVerify);
-router.get("/otp", authenticate, requestOtp);
+router.patch("/verify", isAuthenticated, userVerify);
+router.get("/otp", isAuthenticated, requestOtp);
 
 // profile
 router
   .route("/profile")
-  .get(authenticate, getProfile)
-  .patch(authenticate, editProfile);
+  .get(isAuthenticated, getProfile)
+  .patch(isAuthenticated, editProfile);
 
 // Cart
 router
   .route("/cart")
-  .post(authenticate, addToCart)
-  .get(authenticate, getCart)
-  .delete(authenticate, deleteCart);
+  .post(isAuthenticated, addToCart)
+  .get(isAuthenticated, getCart)
+  .delete(isAuthenticated, deleteCart);
 
 // Order
-router.post("/create-order", authenticate, createOrder);
-router.get("/orders", authenticate, getOrders);
-router.get("/order/:id", authenticate, getOrderById);
+router.post("/create-order", isAuthenticated, createOrder);
+router.get("/orders", isAuthenticated, getOrders);
+router.get("/order/:id", isAuthenticated, getOrderById);
 
 // Payment
 

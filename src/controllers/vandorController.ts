@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { createFoodInputs } from "../dto/food.dto";
-import { editVandorInputs, vandorLoginInputs } from "../dto/vandor.dto";
+import {
+  createOfferInputs,
+  editVandorInputs,
+  vandorLoginInputs,
+} from "../dto/vandor.dto";
 import { Food } from "../models/food.model";
+import { Offer } from "../models/offer.model";
 import { Order } from "../models/order.model";
 import { generateToken, validatePassword } from "../utility/password";
 import { findVandor } from "../utility/vandor";
@@ -271,5 +276,157 @@ export const processOrder = async (
 
   res.status(400).json({
     message: "Order Not Found",
+  });
+};
+
+/** ---------------------- Offer Section ------------------------- **/
+
+export const getOffers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    let currentOffers = [];
+
+    const offers = await Offer.find().populate("vandors");
+
+    if (offers) {
+      offers.forEach((offer) => {
+        // if vandor available..
+        if (offer.vandors) {
+          offer.vandors.forEach((vandor) => {
+            if (vandor._id.toString() === user._id) {
+              currentOffers.push(offer);
+            }
+          });
+        }
+
+        // GENERIC Offer
+        else if (offer.offerType === "GENERIC") {
+          currentOffers.push(offer);
+        }
+      });
+
+      return res.status(200).json(currentOffers);
+    }
+  }
+
+  res.status(404).json({
+    message: "Offer Not Found",
+  });
+};
+
+export const addOffer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  if (user) {
+    const {
+      title,
+      description,
+      offerType,
+      offerAmount,
+      pincode,
+      promocode,
+      promoType,
+      startValidity,
+      endValidity,
+      bank,
+      bins,
+      minValue,
+      isActive,
+    } = <createOfferInputs>req.body;
+
+    const vandor = await findVandor(user._id);
+
+    if (vandor) {
+      const offer = await Offer.create({
+        title,
+        description,
+        offerType,
+        offerAmount,
+        pincode,
+        promocode,
+        promoType,
+        startValidity,
+        endValidity,
+        bank,
+        bins,
+        isActive,
+        minValue,
+        vandors: [vandor],
+      });
+
+      return res.status(200).json(offer);
+    }
+  }
+
+  res.status(400).json({
+    message: "Unable to Add Offer",
+  });
+};
+
+export const editOffer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  const offerId = req.params.id;
+
+  if (user) {
+    const {
+      title,
+      description,
+      offerType,
+      offerAmount,
+      pincode,
+      promocode,
+      promoType,
+      startValidity,
+      endValidity,
+      bank,
+      bins,
+      minValue,
+      isActive,
+    } = <createOfferInputs>req.body;
+
+    const offer = await Offer.findById(offerId);
+
+    if (offer) {
+      const vandor = await findVandor(user._id);
+
+      if (vandor) {
+        // update offer
+
+        (offer.title = title), (offer.description = description);
+        offer.offerType = offerType;
+        offer.offerAmount = offerAmount;
+        offer.pincode = pincode;
+        offer.promocode = promocode;
+        offer.promoType = promoType;
+        offer.startValidity = startValidity;
+        offer.endValidity = endValidity;
+        offer.bank = bank;
+        offer.bins = bins;
+        offer.minValue = minValue;
+        offer.isActive = isActive;
+
+        const result = await offer.save();
+
+        return res.status(200).json(result);
+      }
+    }
+  }
+
+  res.status(404).json({
+    message: "Offer Not Found!",
   });
 };

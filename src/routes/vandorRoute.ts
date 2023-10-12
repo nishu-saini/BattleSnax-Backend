@@ -1,8 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import {
   addFood,
+  addOffer,
+  editOffer,
   getCurrentOrders,
   getFoods,
+  getOffers,
   getOrderDetails,
   getVandorProfile,
   login,
@@ -11,7 +14,7 @@ import {
   updateVandorProfile,
   updateVandorService,
 } from "../controllers/vandorController";
-import { authenticate } from "../middlewares/auth";
+import { isAuthenticated } from "../middlewares/auth";
 import multer from "multer";
 
 const router = express.Router();
@@ -37,20 +40,25 @@ router.post("/login", login);
 
 router
   .route("/profile")
-  .get(authenticate, getVandorProfile)
-  .patch(authenticate, updateVandorProfile);
+  .get(isAuthenticated, getVandorProfile)
+  .patch(isAuthenticated, updateVandorProfile);
 
 router
   .route("/coverimage")
-  .patch(authenticate, images, updateVandorCoverProfile);
+  .patch(isAuthenticated, images, updateVandorCoverProfile);
 
-router.route("/service").patch(authenticate, updateVandorService);
-router.route("/food").post(authenticate, images, addFood);
-router.route("/foods").get(authenticate, getFoods);
+router.route("/service").patch(isAuthenticated, updateVandorService);
+router.route("/food").post(isAuthenticated, images, addFood);
+router.route("/foods").get(isAuthenticated, getFoods);
 
 // Orders
-router.get("/orders", authenticate, getCurrentOrders);
-router.get("/order/:id", authenticate, getOrderDetails);
-router.put("/order/:id/process", authenticate, processOrder);
+router.get("/orders", isAuthenticated, getCurrentOrders);
+router.get("/order/:id", isAuthenticated, getOrderDetails);
+router.put("/order/:id/process", isAuthenticated, processOrder);
+
+// Offers
+router.get("/offers", isAuthenticated, getOffers);
+router.post("/offer", isAuthenticated, addOffer);
+router.put("/offer/:id", isAuthenticated, editOffer);
 
 export default router;
