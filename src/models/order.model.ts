@@ -5,14 +5,11 @@ export interface OrderDoc extends Document {
   vandorId: string;
   items: [any];
   totalAmount: number;
+  paidAmount: number;
   orderDate: Date;
-  paidThrough: string; // COD, Credit Card, Wallet
-  payementResponse: string;
   orderStatus: string;
   remarks: string;
   deliveryId: string;
-  appliedOffers: boolean;
-  offerId: string;
   readyTime: number; // max 60 minutes
 }
 
@@ -43,14 +40,12 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
+    paidAmount: {
+      type: Number,
+      require: true,
+    },
     orderDate: {
       type: Date,
-    },
-    paidThrough: {
-      type: String,
-    },
-    payementResponse: {
-      type: String,
     },
     orderStatus: {
       type: String,
@@ -59,12 +54,6 @@ const orderSchema = new Schema(
       type: String,
     },
     deliveryId: {
-      type: String,
-    },
-    appliedOffers: {
-      type: Boolean,
-    },
-    offerId: {
       type: String,
     },
     readyTime: {

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createVandorInput } from "../dto/vandor.dto";
+import { Transaction } from "../models/transaction.model";
 import { Vandor } from "../models/vandor.model";
 import { generateSalt, hashedPassword } from "../utility/password";
 import { findVandor } from "../utility/vandor";
@@ -84,5 +85,41 @@ export const getVandorByID = async (
 
   return res.json({
     message: "vandor not found",
+  });
+};
+
+/** --------------------- Transaction Section -------------------- **/
+
+export const getTransactions = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const transactions = await Transaction.find();
+
+  if (transactions) {
+    return res.status(200).json(transactions);
+  }
+
+  return res.status(404).json({
+    message: "Transaction not Found!",
+  });
+};
+
+export const getTransactionById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  const transaction = await Transaction.findById(id);
+
+  if (transaction) {
+    return res.status(200).json(transaction);
+  }
+
+  return res.status(404).json({
+    message: "Transaction not Found!",
   });
 };

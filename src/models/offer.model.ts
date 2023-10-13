@@ -41,7 +41,7 @@ const offerSchema = new Schema(
       require: true,
     },
     offerAmount: {
-      type: String,
+      type: Number,
       require: true,
     },
     startValidity: {

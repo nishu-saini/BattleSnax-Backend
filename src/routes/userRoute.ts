@@ -2,6 +2,7 @@ import express from "express";
 import {
   addToCart,
   createOrder,
+  createPayment,
   deleteCart,
   editProfile,
   getCart,
@@ -12,6 +13,7 @@ import {
   requestOtp,
   signup,
   userVerify,
+  verifyOffer,
 } from "../controllers/userController";
 import { isAuthenticated } from "../middlewares/auth";
 
@@ -36,11 +38,15 @@ router
   .get(isAuthenticated, getCart)
   .delete(isAuthenticated, deleteCart);
 
+// Apply Offers
+router.get("/offer/verify/:id", isAuthenticated, verifyOffer);
+
 // Order
 router.post("/create-order", isAuthenticated, createOrder);
 router.get("/orders", isAuthenticated, getOrders);
 router.get("/order/:id", isAuthenticated, getOrderById);
 
 // Payment
+router.post("/create-payment", isAuthenticated, createPayment);
 
 export default router;
