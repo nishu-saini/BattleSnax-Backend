@@ -47,6 +47,8 @@ export const createVandor = async (
     serviceAvailable: false,
     coverImages: [],
     foods: [],
+    lat: 0,
+    lng: 0,
   });
 
   res.json({

@@ -126,6 +126,7 @@ export const updateVandorService = async (
   next: NextFunction
 ) => {
   const user = req.user;
+  const { lat, lng } = req.body;
 
   if (user) {
     const vandor = await findVandor(user._id);
@@ -133,8 +134,12 @@ export const updateVandorService = async (
     if (vandor) {
       vandor.serviceAvailable = !vandor.serviceAvailable;
 
-      const savedResult = await vandor.save();
+      if (lat && lng) {
+        vandor.lat = lat;
+        vandor.lng = lng;
+      }
 
+      const savedResult = await vandor.save();
       return res.json(savedResult);
     }
 

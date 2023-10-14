@@ -36,8 +36,10 @@ router.get("/", (req: Request, res: Response, next: NextFunction) => {
   });
 });
 
+/** --------------- Vandor Authentication --------------- **/
 router.post("/login", login);
 
+/** --------------- Vandor Profile ------------------- **/
 router
   .route("/profile")
   .get(isAuthenticated, getVandorProfile)
@@ -47,16 +49,17 @@ router
   .route("/coverimage")
   .patch(isAuthenticated, images, updateVandorCoverProfile);
 
+/** --------------- Vandor Services ------------------- **/
 router.route("/service").patch(isAuthenticated, updateVandorService);
 router.route("/food").post(isAuthenticated, images, addFood);
 router.route("/foods").get(isAuthenticated, getFoods);
 
-// Orders
+/** --------------- Orders ------------------- **/
 router.get("/orders", isAuthenticated, getCurrentOrders);
 router.get("/order/:id", isAuthenticated, getOrderDetails);
 router.put("/order/:id/process", isAuthenticated, processOrder);
 
-// Offers
+/** --------------- Offers ------------------- **/
 router.get("/offers", isAuthenticated, getOffers);
 router.post("/offer", isAuthenticated, addOffer);
 router.put("/offer/:id", isAuthenticated, editOffer);

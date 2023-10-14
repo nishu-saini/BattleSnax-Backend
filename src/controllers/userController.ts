@@ -13,7 +13,11 @@ import { Offer } from "../models/offer.model";
 import { Order } from "../models/order.model";
 import { Transaction } from "../models/transaction.model";
 import { User } from "../models/user.model";
-import { generateOtp, onRequestOTP } from "../utility/notification";
+import {
+  assignOrderForDelivery,
+  generateOtp,
+  onRequestOTP,
+} from "../utility/notification";
 import {
   generateSalt,
   generateToken,
@@ -486,6 +490,9 @@ export const createOrder = async (
       transaction.status = "CONFIRMED";
 
       await transaction.save();
+
+      assignOrderForDelivery(currentOrder._id, vandorId);
+
       return res.status(200).json(currentOrder);
     }
   }

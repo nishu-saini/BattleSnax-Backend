@@ -14,6 +14,8 @@ interface vandorDoc extends Document {
   coverImages: [string];
   rating: number;
   foods: any;
+  lat: number;
+  lng: number;
 }
 
 const vandorSchema = new Schema(
@@ -67,6 +69,8 @@ const vandorSchema = new Schema(
         ref: "food",
       },
     ],
+    lat: { type: Number },
+    lng: { type: Number },
   },
   {
     // delete unneccessary property from sending to client side

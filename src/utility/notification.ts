@@ -28,3 +28,14 @@ export const onRequestOTP = async (otp: number, toPhoneNumber: string) => {
 };
 
 // Payment Notification or Email
+
+// Delivery Notification
+export const assignOrderForDelivery = async (
+  orderId: string,
+  vandorId: string
+) => {
+  // find the vandor
+  // find the available Delivery person
+  // check the nearest person and assign the order
+  // update delivery ID
+};

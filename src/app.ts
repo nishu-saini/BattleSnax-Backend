@@ -3,6 +3,7 @@ import adminRoute from "./routes/adminRoute";
 import vandorRoute from "./routes/vandorRoute";
 import shoppingRoute from "./routes/shoppingRoute";
 import userRoute from "./routes/userRoute";
+import deliveryRoute from "./routes/deliveryRoute";
 import path from "path";
 
 const app = express();
@@ -19,5 +20,6 @@ app.use("/admin", adminRoute);
 app.use("/vandor", vandorRoute);
 app.use(shoppingRoute);
 app.use("/user", userRoute);
+app.use("/delivery", deliveryRoute);
 
 export default app;
