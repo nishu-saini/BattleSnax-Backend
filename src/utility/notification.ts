@@ -1,5 +1,8 @@
 import { ACCOUNT_SID, AUTH_TOKEN, PHONE_NUMBER } from "../config/config";
 import twilio from "twilio";
+import { Vandor } from "../models/vandor.model";
+import { DeliveryUser } from "../models/deliveryUser.model";
+import { Order } from "../models/order.model";
 
 // Email
 
@@ -35,7 +38,34 @@ export const assignOrderForDelivery = async (
   vandorId: string
 ) => {
   // find the vandor
-  // find the available Delivery person
-  // check the nearest person and assign the order
-  // update delivery ID
+  const vandor = await Vandor.findById(vandorId);
+
+  if (vandor) {
+    const areaCode = vandor.pincode;
+    const vandorLat = vandor.lat;
+    const vandorLng = vandor.lng;
+
+    // find the available Delivery person
+    const deliveryPerson = await DeliveryUser.find({
+      pincode: areaCode,
+      verified: true,
+      isAvailable: true,
+    });
+
+    if (deliveryPerson) {
+      // check the nearest person and assign the order
+      console.log(`Delivery Person ${deliveryPerson[0]}`);
+
+      const currentOrder = await Order.findById(orderId);
+
+      if (currentOrder) {
+        // update delivery ID
+        currentOrder.deliveryId = deliveryPerson[0]._id;
+        const result = await currentOrder.save();
+
+        // Notify to vandor for received New Order using Firebase Push Notification
+        console.log(result);
+      }
+    }
+  }
 };

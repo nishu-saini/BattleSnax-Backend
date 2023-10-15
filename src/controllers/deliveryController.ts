@@ -52,6 +52,7 @@ export const deliveryUserSignUp = async (
     phone,
     firstName,
     lastName,
+    pincode,
     address,
     verified: false,
     lat: 0,

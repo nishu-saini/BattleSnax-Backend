@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createVandorInput } from "../dto/vandor.dto";
+import { DeliveryUser } from "../models/deliveryUser.model";
 import { Transaction } from "../models/transaction.model";
 import { Vandor } from "../models/vandor.model";
 import { generateSalt, hashedPassword } from "../utility/password";
@@ -123,5 +124,63 @@ export const getTransactionById = async (
 
   return res.status(404).json({
     message: "Transaction not Found!",
+  });
+};
+
+export const verifyDeliveryUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id, status } = req.body;
+
+  if (_id) {
+    const profile = await DeliveryUser.findById(_id);
+
+    if (profile) {
+      profile.verified = status;
+
+      const result = await profile.save();
+
+      return res.status(200).json(result);
+    }
+  }
+
+  return res.status(400).json({
+    message: "Unable to verify Delivery User",
+  });
+};
+
+export const getDeliveryUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const deliveryUsers = await DeliveryUser.find();
+
+  if (deliveryUsers) {
+    return res.status(200).json(deliveryUsers);
+  }
+
+  return res.status(400).json({
+    message: "Delivery User Not Found!",
+  });
+};
+
+export const getDeliveryUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+
+  const deliveryUser = await DeliveryUser.findById(id);
+
+  if (deliveryUser) {
+    return res.status(200).json(deliveryUser);
+  }
+
+  return res.status(400).json({
+    message: "Delivery User Not Found!",
   });
 };
