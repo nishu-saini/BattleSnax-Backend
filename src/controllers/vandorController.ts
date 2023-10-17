@@ -100,22 +100,10 @@ export const updateVandorCoverProfile = async (
   const user = req.user;
 
   if (user) {
-    const vandor = await findVandor(user._id);
-
-    if (vandor) {
-      const files = req.files as [Express.Multer.File];
-
-      const images = files.map((file: Express.Multer.File) => file.filename);
-
-      vandor.coverImages.push(...images);
-
-      const result = await vandor.save();
-
-      return res.json(result);
-    }
+    // Upload Image to Cloudnary
   }
 
-  res.json({
+  res.status(400).json({
     message: "Something went wrong while updating cover image",
   });
 };

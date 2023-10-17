@@ -1,2 +1,4 @@
 /node_modules
 /src/config/config.ts
+/src/config/config.env
+/todo.txt

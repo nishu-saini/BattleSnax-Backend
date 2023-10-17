@@ -25,7 +25,7 @@ export const createVandor = async (
   const existingVandor = await findVandor("", email);
 
   if (existingVandor) {
-    return res.json({
+    return res.status(409).json({
       message: "A vandor is already existed with this email ID",
     });
   }
@@ -52,7 +52,7 @@ export const createVandor = async (
     lng: 0,
   });
 
-  res.json({
+  res.status(200).json({
     vandor,
   });
 };
@@ -65,10 +65,10 @@ export const getVandors = async (
   const vandors = await Vandor.find();
 
   if (vandors) {
-    return res.json(vandors);
+    return res.status(200).json(vandors);
   }
 
-  return res.json({
+  return res.status(400).json({
     message: "vandors data not available",
   });
 };
@@ -83,10 +83,10 @@ export const getVandorByID = async (
   const vandor = await findVandor(vandorId);
 
   if (vandor) {
-    return res.json(vandor);
+    return res.status(200).json(vandor);
   }
 
-  return res.json({
+  return res.status(404).json({
     message: "vandor not found",
   });
 };

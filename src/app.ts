@@ -1,19 +1,30 @@
 import express from "express";
+import { config } from "dotenv";
 import adminRoute from "./routes/adminRoute";
 import vandorRoute from "./routes/vandorRoute";
 import shoppingRoute from "./routes/shoppingRoute";
 import userRoute from "./routes/userRoute";
 import deliveryRoute from "./routes/deliveryRoute";
-import path from "path";
+import cors from "cors";
 
 const app = express();
+
+config({
+  path: "./config/config.env",
+});
 
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const imagePath = path.join(__dirname, "../images");
-app.use("/images", express.static(imagePath));
+const frontendURL = process.env.FRONTEND_URL || "http://127.0.0.1:5173";
+app.use(
+  cors({
+    origin: [frontendURL],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Routes
 app.use("/admin", adminRoute);
