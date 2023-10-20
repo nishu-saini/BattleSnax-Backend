@@ -12,8 +12,9 @@ const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const deliveryRoute_1 = __importDefault(require("./routes/deliveryRoute"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
+// Configuration for .env
 (0, dotenv_1.config)({
-    path: "./config/config.env",
+    path: "./.env",
 });
 // Middlewares
 app.use(express_1.default.json());

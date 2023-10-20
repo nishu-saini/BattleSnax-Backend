@@ -1,4 +1,3 @@
-import { ACCOUNT_SID, AUTH_TOKEN, PHONE_NUMBER } from "../config/config";
 import twilio from "twilio";
 import { Vandor } from "../models/vandor.model";
 import { DeliveryUser } from "../models/deliveryUser.model";
@@ -19,11 +18,11 @@ export const generateOtp = () => {
 };
 
 export const onRequestOTP = async (otp: number, toPhoneNumber: string) => {
-  const client = twilio(ACCOUNT_SID, AUTH_TOKEN);
+  const client = twilio(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
   const response = await client.messages.create({
     body: `Your OTP is ${otp}`,
-    from: PHONE_NUMBER,
+    from: process.env.PHONE_NUMBER,
     to: toPhoneNumber,
   });
 

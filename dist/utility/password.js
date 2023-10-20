@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateSignature = exports.generateToken = exports.validatePassword = exports.hashedPassword = exports.generateSalt = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("../config/config");
 const generateSalt = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield bcrypt_1.default.genSalt(10);
 });
@@ -29,7 +28,7 @@ const validatePassword = (enteredPassword, hashedPassword) => __awaiter(void 0, 
 });
 exports.validatePassword = validatePassword;
 const generateToken = (payload) => {
-    return jsonwebtoken_1.default.sign(payload, config_1.JWT_SECRET, {
+    return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 };
@@ -37,7 +36,7 @@ exports.generateToken = generateToken;
 const validateSignature = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.get("Authorization");
     if (token) {
-        const payload = (yield jsonwebtoken_1.default.verify(token.split(" ")[1], config_1.JWT_SECRET));
+        const payload = (yield jsonwebtoken_1.default.verify(token.split(" ")[1], process.env.JWT_SECRET));
         req.user = payload;
         return true;
     }

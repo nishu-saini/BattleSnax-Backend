@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.assignOrderForDelivery = exports.onRequestOTP = exports.generateOtp = void 0;
-const config_1 = require("../config/config");
 const twilio_1 = __importDefault(require("twilio"));
 const vandor_model_1 = require("../models/vandor.model");
 const deliveryUser_model_1 = require("../models/deliveryUser.model");
@@ -29,10 +28,10 @@ const generateOtp = () => {
 };
 exports.generateOtp = generateOtp;
 const onRequestOTP = (otp, toPhoneNumber) => __awaiter(void 0, void 0, void 0, function* () {
-    const client = (0, twilio_1.default)(config_1.ACCOUNT_SID, config_1.AUTH_TOKEN);
+    const client = (0, twilio_1.default)(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
     const response = yield client.messages.create({
         body: `Your OTP is ${otp}`,
-        from: config_1.PHONE_NUMBER,
+        from: process.env.PHONE_NUMBER,
         to: toPhoneNumber,
     });
     return response;

@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "./config";
 
 export default async function connectDB() {
   try {
-    await mongoose.connect(MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI, {
       dbName: "Battlesnax",
     });
     console.log(`Database Connected: ${mongoose.connection.host}`);
