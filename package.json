@@ -2,7 +2,7 @@
   "name": "food_order_backend",
   "version": "1.0.0",
   "description": "Food Order App",
-  "main": "server.ts",
+  "main": "src/server.ts",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
