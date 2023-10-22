@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": "16.10.0",
+    "node": ">=16.10.0",
     "npm": "7.24.0"
   },
   "author": "Nishu Saini",
