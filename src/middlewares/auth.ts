@@ -23,6 +23,6 @@ export const isAuthenticated = async (
   }
 
   return res.status(401).json({
-    message: "user not Authorized",
+    message: "User Not Authenticated",
   });
 };

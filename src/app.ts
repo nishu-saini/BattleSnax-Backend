@@ -6,6 +6,7 @@ import shoppingRoute from "./routes/shoppingRoute";
 import userRoute from "./routes/userRoute";
 import deliveryRoute from "./routes/deliveryRoute";
 import cors from "cors";
+import { errorMiddleware } from "./middlewares/error";
 
 const app = express();
 
@@ -18,6 +19,7 @@ config({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS Implementation
 const frontendURL = process.env.FRONTEND_URL || "http://127.0.0.1:5173";
 app.use(
   cors({
@@ -33,5 +35,8 @@ app.use("/vandor", vandorRoute);
 app.use(shoppingRoute);
 app.use("/user", userRoute);
 app.use("/delivery", deliveryRoute);
+
+// Using Error Middleware
+app.use(errorMiddleware);
 
 export default app;

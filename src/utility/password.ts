@@ -28,14 +28,20 @@ export const validateSignature = async (req: Request) => {
   const token = req.get("Authorization");
 
   if (token) {
-    const payload = (await Jwt.verify(
-      token.split(" ")[1],
-      process.env.JWT_SECRET
-    )) as authPayload;
+    // check if token valid
+    try {
+      const payload = Jwt.verify(
+        token.split(" ")[1],
+        process.env.JWT_SECRET
+      ) as authPayload;
 
-    req.user = payload;
+      req.user = payload;
 
-    return true;
+      return true;
+    } catch (error) {
+      // token expired
+      return false;
+    }
   }
 
   return false;
