@@ -17,7 +17,7 @@ const isAuthenticated = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         return next();
     }
     return res.status(401).json({
-        message: "user not Authorized",
+        message: "User Not Authenticated",
     });
 });
 exports.isAuthenticated = isAuthenticated;

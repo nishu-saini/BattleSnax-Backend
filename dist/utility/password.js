@@ -36,9 +36,16 @@ exports.generateToken = generateToken;
 const validateSignature = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.get("Authorization");
     if (token) {
-        const payload = (yield jsonwebtoken_1.default.verify(token.split(" ")[1], process.env.JWT_SECRET));
-        req.user = payload;
-        return true;
+        // check if token valid
+        try {
+            const payload = jsonwebtoken_1.default.verify(token.split(" ")[1], process.env.JWT_SECRET);
+            req.user = payload;
+            return true;
+        }
+        catch (error) {
+            // token expired
+            return false;
+        }
     }
     return false;
 });

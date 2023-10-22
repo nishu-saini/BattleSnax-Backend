@@ -11,6 +11,7 @@ const shoppingRoute_1 = __importDefault(require("./routes/shoppingRoute"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const deliveryRoute_1 = __importDefault(require("./routes/deliveryRoute"));
 const cors_1 = __importDefault(require("cors"));
+const error_1 = require("./middlewares/error");
 const app = (0, express_1.default)();
 // Configuration for .env
 (0, dotenv_1.config)({
@@ -19,6 +20,7 @@ const app = (0, express_1.default)();
 // Middlewares
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// CORS Implementation
 const frontendURL = process.env.FRONTEND_URL || "http://127.0.0.1:5173";
 app.use((0, cors_1.default)({
     origin: [frontendURL],
@@ -31,5 +33,7 @@ app.use("/vandor", vandorRoute_1.default);
 app.use(shoppingRoute_1.default);
 app.use("/user", userRoute_1.default);
 app.use("/delivery", deliveryRoute_1.default);
+// Using Error Middleware
+app.use(error_1.errorMiddleware);
 exports.default = app;
 //# sourceMappingURL=app.js.map
